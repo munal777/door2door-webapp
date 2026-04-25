@@ -101,8 +101,7 @@ export const API_ENDPOINTS = {
     ASSIGNMENTS: {
       ACTIVE: '/riders/assignments/active/',
       ASSIGNABLE_ORDERS: '/riders/assignments/orders/assignable/',
-      ASSIGN_ORDER: (orderNumber: string) =>
-        `/riders/assignments/orders/${orderNumber}/`,
+      BULK_ASSIGN: '/riders/assignments/orders/bulk/',
     },
   },
 

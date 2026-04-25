@@ -41,33 +41,18 @@ export interface AssignableOnlineOrder {
   id: number;
   order_number: string;
   order_type_display: string;
-  status: string;
   status_display: string;
-  sender_name: string;
-  sender_phone: string;
+  sender_address: string;
   sender_city: string;
-  sender_state: string;
-  receiver_name: string;
-  receiver_phone: string;
+  receiver_address: string;
   receiver_city: string;
-  receiver_state: string;
   package_type_display: string;
   service_type_display: string;
-  weight: number;
-  length?: number;
-  width?: number;
-  height?: number;
-  package_description?: string;
-  total_price: number;
   active_assignment_id?: number;
   active_rider_name?: string;
-  created_at: string;
 }
 
-export interface AssignOrderToRiderData {
-  rider_id: number;
-  notes?: string;
-}
+
 
 export interface UpdateRiderStatusData {
   operational_status?: string;
