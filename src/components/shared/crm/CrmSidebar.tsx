@@ -177,7 +177,7 @@ export default function CrmSidebar({
   return (
     <aside
       className={cn(
-        "relative flex min-h-full shrink-0 self-stretch flex-col overflow-visible border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-300",
+        "relative hidden shrink-0 self-stretch flex-col overflow-visible border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-300 lg:flex min-h-full",
         collapsed ? "w-20" : "w-72",
       )}
     >
@@ -207,7 +207,7 @@ export default function CrmSidebar({
       <button
         type="button"
         onClick={onToggle}
-        className="absolute -right-3 top-14 z-20 inline-flex h-7 w-7 items-center justify-center rounded-full border border-sidebar-border bg-card text-muted-foreground shadow-sm transition hover:text-foreground"
+        className="absolute -right-3 top-14 z-20 hidden h-7 w-7 items-center justify-center rounded-full border border-sidebar-border bg-card text-muted-foreground shadow-sm transition hover:text-foreground lg:inline-flex"
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         {collapsed ? (
