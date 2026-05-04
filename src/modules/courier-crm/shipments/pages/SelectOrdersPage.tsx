@@ -122,13 +122,7 @@ export const SelectOrdersPage: React.FC = () => {
   });
 
   return (
-    <div
-      style={{
-        backgroundColor: "#FAFAFA",
-        minHeight: "100vh",
-        paddingBottom: "2rem",
-      }}
-    >
+    <div style={{ paddingBottom: "2rem" }}>
       {/* Header */}
       <div
         style={{

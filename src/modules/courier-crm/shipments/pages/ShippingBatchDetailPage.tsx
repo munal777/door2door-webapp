@@ -113,7 +113,7 @@ export const ShippingBatchDetailPage: React.FC = () => {
   }
 
   return (
-    <div style={{ backgroundColor: "#FAFAFA", minHeight: "100vh" }}>
+    <div>
       {/* Header */}
       <div
         style={{
