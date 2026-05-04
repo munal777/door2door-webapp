@@ -149,10 +149,7 @@ export const protectedRoutes: RouteObject[] = [
             path: "shipments",
             element: <ShippingBatchesPage />,
           },
-          {
-            path: "shipments/create",
-            element: <ShippingBatchesPage />,
-          },
+
           {
             path: "shipments/:batchNumber",
             element: <ShippingBatchDetailPage />,

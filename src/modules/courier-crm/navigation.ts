@@ -38,11 +38,8 @@ export const courierNavigation: NavigationGroup[] = [
       {
         label: "Shipments",
         icon: Route,
+        to: "/courier/shipments",
         requiredPermission: "can_manage_shippings",
-        children: [
-          { label: "Shipment List", to: "/courier/shipments" },
-          { label: "Create Shipment", to: "/courier/shipments/create" },
-        ],
       },
       {
         label: "Status Management",
