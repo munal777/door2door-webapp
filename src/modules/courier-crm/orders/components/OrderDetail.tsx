@@ -36,7 +36,6 @@ export default function OrderDetail({
 }: OrderDetailProps) {
   const [order, setOrder] = useState<OrderDetailType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,24 +59,6 @@ export default function OrderDetail({
     }
   };
 
-  const handleUpdatePayment = async (status: "pending" | "paid") => {
-    if (!order) return;
-
-    setIsUpdating(true);
-    try {
-      const updatedOrder = await orderService.updatePaymentStatus(
-        orderNumber,
-        status,
-      );
-      setOrder(updatedOrder);
-    } catch (err) {
-      alert(
-        err instanceof Error ? err.message : "Failed to update payment status",
-      );
-    } finally {
-      setIsUpdating(false);
-    }
-  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-NP", {
@@ -297,38 +278,7 @@ export default function OrderDetail({
                       {order.payment_method_display}
                     </Badge>
                   </div>
-                  <div className="pt-2 flex gap-2">
-                    <Button
-                      size="sm"
-                      variant={
-                        order.payment_status_display === "paid"
-                          ? "outline"
-                          : "default"
-                      }
-                      onClick={() => handleUpdatePayment("paid")}
-                      disabled={
-                        isUpdating ||
-                        order.payment_status_display.toLowerCase() === "paid"
-                      }
-                    >
-                      Mark as Paid
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={
-                        order.payment_status_display.toLowerCase() === "pending"
-                          ? "outline"
-                          : "default"
-                      }
-                      onClick={() => handleUpdatePayment("pending")}
-                      disabled={
-                        isUpdating ||
-                        order.payment_status_display.toLowerCase() === "pending"
-                      }
-                    >
-                      Mark as Pending
-                    </Button>
-                  </div>
+
                 </CardContent>
               </Card>
             </div>
