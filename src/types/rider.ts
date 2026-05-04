@@ -21,9 +21,6 @@ export interface RiderDetail extends CourierRider {
   company_name: string;
   vehicle_model?: string;
   vehicle_color?: string;
-  current_latitude?: string;
-  current_longitude?: string;
-  last_location_update?: string;
   assigned_orders: RiderAssignedOrderSummary[];
 }
 

@@ -156,9 +156,6 @@ export default function CourierRiderDetailPage() {
           </Button>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">Rider Details</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Rider ID: #{rider.id}
-            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -238,28 +235,7 @@ export default function CourierRiderDetailPage() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <MapPin className="h-5 w-5" />
-            Last Known Location
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {rider.current_latitude && rider.current_longitude ? (
-            <p className="text-sm">
-              {rider.current_latitude}, {rider.current_longitude}
-              {rider.last_location_update
-                ? ` • Updated ${rider.last_location_update}`
-                : ""}
-            </p>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Location data not available.
-            </p>
-          )}
-        </CardContent>
-      </Card>
+
 
       <Card>
         <CardHeader>
@@ -277,7 +253,7 @@ export default function CourierRiderDetailPage() {
               onValueChange={setOperationalStatus}
               disabled={!canManageRiders}
             >
-              <SelectTrigger>
+              <SelectTrigger className="border-gray-300 focus:ring-blue-600 focus:border-blue-600">
                 <SelectValue placeholder="Select operational status" />
               </SelectTrigger>
               <SelectContent>
@@ -299,7 +275,7 @@ export default function CourierRiderDetailPage() {
               onValueChange={setAvailabilityStatus}
               disabled={!canManageRiders}
             >
-              <SelectTrigger>
+              <SelectTrigger className="border-gray-300 focus:ring-blue-600 focus:border-blue-600">
                 <SelectValue placeholder="Select availability" />
               </SelectTrigger>
               <SelectContent>

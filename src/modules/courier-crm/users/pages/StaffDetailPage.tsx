@@ -165,9 +165,6 @@ export default function StaffDetailPage() {
           </Button>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">Staff Details</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Staff ID: #{staff.id}
-            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -263,40 +260,40 @@ export default function StaffDetailPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="rounded-md border p-3 flex items-center justify-between">
-              <Label>Manage Orders</Label>
+            <div className={`rounded-md border p-3 flex items-center justify-between transition-colors ${canManageOrders ? 'bg-blue-50/40 border-blue-100' : 'bg-gray-50 border-gray-200'} ${!isAdmin || role === "admin" ? 'opacity-80' : ''}`}>
+              <Label className={!isAdmin || role === "admin" ? "text-gray-600" : ""}>Manage Orders</Label>
               <Switch
                 checked={canManageOrders}
                 onCheckedChange={setCanManageOrders}
                 disabled={!isAdmin || role === "admin"}
               />
             </div>
-            <div className="rounded-md border p-3 flex items-center justify-between">
-              <Label>Manage Shipments</Label>
+            <div className={`rounded-md border p-3 flex items-center justify-between transition-colors ${canManageShippings ? 'bg-blue-50/40 border-blue-100' : 'bg-gray-50 border-gray-200'} ${!isAdmin || role === "admin" ? 'opacity-80' : ''}`}>
+              <Label className={!isAdmin || role === "admin" ? "text-gray-600" : ""}>Manage Shipments</Label>
               <Switch
                 checked={canManageShippings}
                 onCheckedChange={setCanManageShippings}
                 disabled={!isAdmin || role === "admin"}
               />
             </div>
-            <div className="rounded-md border p-3 flex items-center justify-between">
-              <Label>Manage Riders</Label>
+            <div className={`rounded-md border p-3 flex items-center justify-between transition-colors ${canManageRiders ? 'bg-blue-50/40 border-blue-100' : 'bg-gray-50 border-gray-200'} ${!isAdmin || role === "admin" ? 'opacity-80' : ''}`}>
+              <Label className={!isAdmin || role === "admin" ? "text-gray-600" : ""}>Manage Riders</Label>
               <Switch
                 checked={canManageRiders}
                 onCheckedChange={setCanManageRiders}
                 disabled={!isAdmin || role === "admin"}
               />
             </div>
-            <div className="rounded-md border p-3 flex items-center justify-between">
-              <Label>Manage Invitations</Label>
+            <div className={`rounded-md border p-3 flex items-center justify-between transition-colors ${canManageInvitations ? 'bg-blue-50/40 border-blue-100' : 'bg-gray-50 border-gray-200'} ${!isAdmin || role === "admin" ? 'opacity-80' : ''}`}>
+              <Label className={!isAdmin || role === "admin" ? "text-gray-600" : ""}>Manage Invitations</Label>
               <Switch
                 checked={canManageInvitations}
                 onCheckedChange={setCanManageInvitations}
                 disabled={!isAdmin || role === "admin"}
               />
             </div>
-            <div className="rounded-md border p-3 flex items-center justify-between md:col-span-2">
-              <Label>Manage Settings</Label>
+            <div className={`rounded-md border p-3 flex items-center justify-between transition-colors md:col-span-2 ${canManageSettings ? 'bg-blue-50/40 border-blue-100' : 'bg-gray-50 border-gray-200'} ${!isAdmin || role === "admin" ? 'opacity-80' : ''}`}>
+              <Label className={!isAdmin || role === "admin" ? "text-gray-600" : ""}>Manage Settings</Label>
               <Switch
                 checked={canManageSettings}
                 onCheckedChange={setCanManageSettings}

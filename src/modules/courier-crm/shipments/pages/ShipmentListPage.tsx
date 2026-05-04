@@ -80,7 +80,7 @@ export const ShippingBatchesPage: React.FC = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#FAFAFA", minHeight: "100vh" }}>
+    <div>
       {/* Header */}
       <div
         style={{
