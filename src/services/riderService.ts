@@ -109,9 +109,9 @@ export const riderService = {
   updateRiderStatus: async (
     riderId: number,
     payload: UpdateRiderStatusData,
-  ): Promise<RiderDetail> => {
+  ): Promise<{ message: string; operational_status: string; availability_status: string }> => {
     try {
-      const response = await api.patch<ApiResponse<RiderDetail>>(
+      const response = await api.patch<ApiResponse<{ message: string; operational_status: string; availability_status: string }>>(
         API_ENDPOINTS.RIDERS.UPDATE_STATUS(riderId),
         payload,
       );
