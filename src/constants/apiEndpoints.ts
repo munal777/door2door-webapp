@@ -61,6 +61,7 @@ export const API_ENDPOINTS = {
       CREATE: '/orders/manual/',
       LIST: '/orders/list/',
       DETAIL: (orderNumber: string) => `/orders/${orderNumber}/`,
+      UPDATE: (orderNumber: string) => `/orders/${orderNumber}/update/`,
     },
     REQUESTS: {
       NEARBY_LIST: '/orders/requests/nearby/',

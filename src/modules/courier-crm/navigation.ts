@@ -32,6 +32,7 @@ export const courierNavigation: NavigationGroup[] = [
         children: [
           { label: "Order List", to: "/courier/orders" },
           { label: "Create Order", to: "/courier/orders/create" },
+          { label: "Order CRM", to: "/courier/orders/crm" },
         ],
       },
       {
@@ -41,6 +42,7 @@ export const courierNavigation: NavigationGroup[] = [
         children: [
           { label: "Shipment List", to: "/courier/shipments" },
           { label: "Create Shipment", to: "/courier/shipments/create" },
+          { label: "Batch Update", to: "/courier/shipments/batch-update" },
         ],
       },
     ],

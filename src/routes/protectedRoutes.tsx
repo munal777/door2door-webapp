@@ -33,6 +33,8 @@ import SettingsPage from "@/modules/courier-crm/settings/pages/SettingsPage";
 import OrderStatsPage from "@/modules/courier-crm/analytics/pages/OrderStatsPage";
 import RevenueStatsPage from "@/modules/courier-crm/analytics/pages/RevenueStatsPage";
 import ShipmentsStatsPage from "@/modules/courier-crm/analytics/pages/ShipmentsStatsPage";
+import OrderCRMPage from "@/modules/courier-crm/orders/pages/OrderCRMPage";
+import ShipmentBatchUpdatePage from "@/modules/courier-crm/shipments/pages/ShipmentBatchUpdatePage";
 
 function ProtectedGuard() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -93,6 +95,10 @@ export const protectedRoutes: RouteObject[] = [
             element: <OrderListPage />,
           },
           {
+            path: "orders/crm",
+            element: <OrderCRMPage />,
+          },
+          {
             path: "orders/create",
             element: <CreateOrderPage />,
           },
@@ -147,6 +153,10 @@ export const protectedRoutes: RouteObject[] = [
           {
             path: "shipments/create",
             element: <ShippingBatchesPage />,
+          },
+          {
+            path: "shipments/batch-update",
+            element: <ShipmentBatchUpdatePage />,
           },
           {
             path: "shipments/:batchNumber",
