@@ -1,4 +1,5 @@
 import {
+  Activity,
   BarChart3,
   Bell,
   ClipboardList,
@@ -32,7 +33,6 @@ export const courierNavigation: NavigationGroup[] = [
         children: [
           { label: "Order List", to: "/courier/orders" },
           { label: "Create Order", to: "/courier/orders/create" },
-          { label: "Order CRM", to: "/courier/orders/crm" },
         ],
       },
       {
@@ -42,8 +42,13 @@ export const courierNavigation: NavigationGroup[] = [
         children: [
           { label: "Shipment List", to: "/courier/shipments" },
           { label: "Create Shipment", to: "/courier/shipments/create" },
-          { label: "Batch Update", to: "/courier/shipments/batch-update" },
         ],
+      },
+      {
+        label: "Status Management",
+        icon: Activity,
+        to: "/courier/status-management",
+        requiredPermission: "can_manage_orders",
       },
     ],
   },
