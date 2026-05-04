@@ -39,23 +39,41 @@ const PAYMENT_STATUS_OPTIONS = [
   { value: "refunded", label: "Refunded", color: "bg-slate-100 text-slate-700 border-slate-200" },
 ] as const;
 
+const PAYMENT_METHOD_OPTIONS = [
+  { value: "cod", label: "Cash on Delivery" },
+  { value: "esewa", label: "eSewa" },
+  { value: "sender_prepaid", label: "Sender Prepaid" },
+] as const;
+
 function currentStatusValue(display: string): string {
   return display.toLowerCase().replace(/\s+/g, "_");
+}
+
+function currentPaymentMethodValue(display: string): string {
+  const d = display.toLowerCase();
+  if (d.includes("cash")) return "cod";
+  if (d.includes("esewa")) return "esewa";
+  if (d.includes("prepaid")) return "sender_prepaid";
+  return d.replace(/\s+/g, "_");
 }
 
 export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusUpdateFormProps) {
   const currentStatus = currentStatusValue(order.status_display);
   const currentPaymentStatus = currentStatusValue(order.payment_status_display);
+  const currentPaymentMethod = currentPaymentMethodValue(order.payment_method_display);
 
   const [status, setStatus] = useState(currentStatus);
   const [paymentStatus, setPaymentStatus] = useState(currentPaymentStatus);
+  const [paymentMethod, setPaymentMethod] = useState(currentPaymentMethod);
   const [remarks, setRemarks] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const hasChanges =
-    status !== currentStatus || paymentStatus !== currentPaymentStatus;
+    status !== currentStatus || 
+    paymentStatus !== currentPaymentStatus ||
+    paymentMethod !== currentPaymentMethod;
 
   const handleSave = async () => {
     if (!hasChanges) return;
@@ -66,6 +84,7 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
     const payload: OrderUpdateData = {};
     if (status !== currentStatus) payload.status = status as OrderUpdateData["status"];
     if (paymentStatus !== currentPaymentStatus) payload.payment_status = paymentStatus as OrderUpdateData["payment_status"];
+    if (paymentMethod !== currentPaymentMethod) payload.payment_method = paymentMethod as OrderUpdateData["payment_method"];
     if (remarks.trim()) payload.remarks = remarks.trim();
 
     try {
@@ -84,12 +103,14 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
   const handleReset = () => {
     setStatus(currentStatus);
     setPaymentStatus(currentPaymentStatus);
+    setPaymentMethod(currentPaymentMethod);
     setRemarks("");
     setError(null);
   };
 
   const currentStatusOption = STATUS_OPTIONS.find((o) => o.value === currentStatus);
   const currentPaymentOption = PAYMENT_STATUS_OPTIONS.find((o) => o.value === currentPaymentStatus);
+  const currentMethodOption = PAYMENT_METHOD_OPTIONS.find((o) => o.value === currentPaymentMethod);
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -108,6 +129,11 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
           {currentPaymentOption && (
             <Badge variant="outline" className={`text-xs ${currentPaymentOption.color}`}>
               {currentPaymentOption.label}
+            </Badge>
+          )}
+          {currentMethodOption && (
+            <Badge variant="outline" className="text-xs bg-gray-100 text-gray-700 border-gray-200">
+              {currentMethodOption.label}
             </Badge>
           )}
         </div>
@@ -182,6 +208,28 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
                     />
                     {opt.label}
                   </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Payment Method */}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+            Payment Method
+          </label>
+          <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+            <SelectTrigger
+              id="crm-payment-method"
+              className="h-10 border-gray-300 focus:ring-blue-600 focus:border-blue-600"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PAYMENT_METHOD_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
                 </SelectItem>
               ))}
             </SelectContent>

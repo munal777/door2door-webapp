@@ -113,6 +113,7 @@ export interface OrderUpdateData {
   // Status updates
   status?: 'pending' | 'confirmed' | 'pickup_assigned' | 'picked_up' | 'at_origin_hub' | 'in_transit' | 'at_destination_hub' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned';
   payment_status?: 'pending' | 'paid' | 'failed' | 'refunded';
+  payment_method?: 'cod' | 'esewa' | 'sender_prepaid';
   remarks?: string;
   // Parcel corrections
   weight?: number;
