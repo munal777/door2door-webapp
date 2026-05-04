@@ -60,7 +60,7 @@ function getColor(map: Record<string, string>, display: string) {
 }
 
 /* ─── component ────────────────────────────────────────────── */
-export default function OrderCRMPage() {
+export default function OrderUpdateView() {
   const [searchValue, setSearchValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [order, setOrder] = useState<OrderDetail | null>(null);
@@ -87,22 +87,7 @@ export default function OrderCRMPage() {
   };
 
   return (
-    <div className="min-h-full bg-gray-50/30">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Page Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <ClipboardEdit className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Order CRM</h1>
-              <p className="text-gray-500 text-sm">
-                Search and manually update order status, payment, and parcel details
-              </p>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-6">
 
         {/* Search Bar */}
         <div className="mb-6">
@@ -352,7 +337,6 @@ export default function OrderCRMPage() {
             </p>
           </div>
         )}
-      </div>
     </div>
   );
 }

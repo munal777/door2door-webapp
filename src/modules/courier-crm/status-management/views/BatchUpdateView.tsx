@@ -46,7 +46,7 @@ const ACTION_COLORS: Record<string, string> = {
 };
 
 /* ─── component ────────────────────────────────────────────── */
-export default function ShipmentBatchUpdatePage() {
+export default function BatchUpdateView() {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -94,22 +94,7 @@ export default function ShipmentBatchUpdatePage() {
   const destinationStop = batch?.stops?.[batch.stops.length - 1];
 
   return (
-    <div className="min-h-full bg-gray-50/30">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Page Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-600 rounded-lg">
-              <Route className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Shipment Batch Update</h1>
-              <p className="text-gray-500 text-sm">
-                Search a shipping batch and record scan events to update all orders inside
-              </p>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-6">
 
         {/* Search Bar */}
         <div className="mb-6">
@@ -397,7 +382,6 @@ export default function ShipmentBatchUpdatePage() {
             </p>
           </div>
         )}
-      </div>
     </div>
   );
 }
