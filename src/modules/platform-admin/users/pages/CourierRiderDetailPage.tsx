@@ -279,9 +279,6 @@ export default function CourierRiderDetail() {
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold truncate">
               {rider.user_details.full_name}
             </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-              Rider ID: #00{rider.id}
-            </p>
           </div>
         </div>
         <div className="self-start sm:self-auto">
