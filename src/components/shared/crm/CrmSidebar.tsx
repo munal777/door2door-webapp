@@ -265,7 +265,12 @@ export default function CrmSidebar({
                         {item.children?.map((child) => {
                           const childActive =
                             location.pathname === child.to ||
-                            location.pathname.startsWith(`${child.to}/`);
+                            (location.pathname.startsWith(`${child.to}/`) &&
+                              !item.children?.some(
+                                (c) =>
+                                  c !== child &&
+                                  location.pathname.startsWith(c.to),
+                              ));
 
                           return (
                             <button
