@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from '../constants/apiEndpoints';
 import type { 
   OrderListItem,
   OrderDetail,
+  OrderUpdateData,
   CreateOrderData, 
   OrderStats, 
   OrderFilters, 
@@ -68,6 +69,23 @@ export const orderService = {
     
     if (!response.data.IsSuccess) {
       throw new Error(response.data.ErrorMessage || 'Failed to fetch order details');
+    }
+    return response.data.Result;
+  },
+
+  /**
+   * Manually update order status, payment status, or parcel details (CRM staff use)
+   */
+  updateOrder: async (
+    orderNumber: string,
+    data: OrderUpdateData
+  ): Promise<OrderDetail> => {
+    const response = await api.patch<ApiResponse<OrderDetail>>(
+      API_ENDPOINTS.ORDERS.MANUAL.UPDATE(orderNumber),
+      data
+    );
+    if (!response.data.IsSuccess) {
+      throw new Error(response.data.ErrorMessage || 'Failed to update order');
     }
     return response.data.Result;
   },

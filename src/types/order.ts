@@ -109,6 +109,20 @@ export interface CreateOrderData {
   payment_status?: 'pending' | 'paid';
 }
 
+export interface OrderUpdateData {
+  // Status updates
+  status?: 'pending' | 'confirmed' | 'pickup_assigned' | 'picked_up' | 'at_origin_hub' | 'in_transit' | 'at_destination_hub' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned';
+  payment_status?: 'pending' | 'paid' | 'failed' | 'refunded';
+  remarks?: string;
+  // Parcel corrections
+  weight?: number;
+  total_quantity?: number;
+  length?: number | null;
+  width?: number | null;
+  height?: number | null;
+  package_description?: string;
+}
+
 export interface OrderTracking {
   id: number;
   order: number;
