@@ -4,7 +4,6 @@ import { API_ENDPOINTS } from '../constants/apiEndpoints';
 import type {
   ActiveRiderAssignment,
   AssignableOnlineOrder,
-  AssignOrderToRiderData,
   CourierRider,
   RiderDetail,
   UpdateRiderStatusData,
@@ -109,9 +108,9 @@ export const riderService = {
   updateRiderStatus: async (
     riderId: number,
     payload: UpdateRiderStatusData,
-  ): Promise<RiderDetail> => {
+  ): Promise<{ message: string; operational_status: string; availability_status: string }> => {
     try {
-      const response = await api.patch<ApiResponse<RiderDetail>>(
+      const response = await api.patch<ApiResponse<{ message: string; operational_status: string; availability_status: string }>>(
         API_ENDPOINTS.RIDERS.UPDATE_STATUS(riderId),
         payload,
       );
@@ -142,11 +141,14 @@ export const riderService = {
     }
   },
 
-  getAssignableOnlineOrders: async (search?: string): Promise<AssignableOnlineOrder[]> => {
+  getAssignableOnlineOrders: async (filters?: { search?: string; type?: 'pickup' | 'delivery' }): Promise<AssignableOnlineOrder[]> => {
     try {
       const params = new URLSearchParams();
-      if (search?.trim()) {
-        params.append('search', search.trim());
+      if (filters?.search?.trim()) {
+        params.append('search', filters.search.trim());
+      }
+      if (filters?.type) {
+        params.append('type', filters.type);
       }
 
       const query = params.toString();
@@ -164,23 +166,24 @@ export const riderService = {
     }
   },
 
-  assignOnlineOrderToRider: async (
-    orderNumber: string,
-    payload: AssignOrderToRiderData,
-  ): Promise<ActiveRiderAssignment> => {
+  bulkAssignOrders: async (payload: {
+    rider_id: number;
+    order_numbers: string[];
+    notes?: string;
+  }): Promise<ActiveRiderAssignment[]> => {
     try {
-      const response = await api.post<ApiResponse<ActiveRiderAssignment>>(
-        API_ENDPOINTS.RIDERS.ASSIGNMENTS.ASSIGN_ORDER(orderNumber),
+      const response = await api.post<ApiResponse<ActiveRiderAssignment[]>>(
+        API_ENDPOINTS.RIDERS.ASSIGNMENTS.BULK_ASSIGN,
         payload,
       );
 
       if (!response.data.IsSuccess) {
-        throw new Error(normalizeErrorMessage(response.data.ErrorMessage, 'Failed to assign order to rider'));
+        throw new Error(normalizeErrorMessage(response.data.ErrorMessage, 'Failed to bulk assign orders'));
       }
 
       return response.data.Result;
     } catch (error) {
-      throw toServiceError(error, 'Failed to assign order to rider');
+      throw toServiceError(error, 'Failed to bulk assign orders');
     }
   },
 };

@@ -24,13 +24,11 @@ import {
   Upload,
   Trash2,
   Plus,
-  CheckCircle,
-  AlertCircle,
   Loader2,
 } from "lucide-react";
 import BrandLogo from "@/components/shared/BrandLogo";
 import { courierService } from "@/services/courierService";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
 
 type DocumentType =
   | "company_registration"
@@ -58,6 +56,7 @@ interface FormData {
 
 export default function CourierRegistration() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     company_email: "",
@@ -87,8 +86,7 @@ export default function CourierRegistration() {
   ]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -99,9 +97,11 @@ export default function CourierRegistration() {
       // Validate file size (5MB max)
       const maxSize = 5 * 1024 * 1024; // 5MB in bytes
       if (file.size > maxSize) {
-        setSubmitError(
-          "File size cannot exceed 5MB. Please choose a smaller file.",
-        );
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: "File size cannot exceed 5MB. Please choose a smaller file.",
+        });
         return;
       }
 
@@ -113,12 +113,15 @@ export default function CourierRegistration() {
         "image/png",
       ];
       if (!allowedTypes.includes(file.type)) {
-        setSubmitError("Only PDF, JPEG, and PNG files are allowed.");
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: "Only PDF, JPEG, and PNG files are allowed.",
+        });
         return;
       }
 
-      // Clear any previous errors
-      setSubmitError(null);
+
     }
 
     setDocuments((docs) =>
@@ -205,14 +208,16 @@ export default function CourierRegistration() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(false);
+    e.preventDefault();
 
     // Validate form
     const validationError = validateForm();
     if (validationError) {
-      setSubmitError(validationError);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: validationError,
+      });
       return;
     }
 
@@ -235,7 +240,10 @@ export default function CourierRegistration() {
       });
 
       if (response.IsSuccess) {
-        setSubmitSuccess(true);
+        toast({
+          title: "Registration Submitted Successfully!",
+          description: "Your courier provider registration has been submitted successfully. Your application is under review. You will receive an email with login credentials once approved.",
+        });
         // Reset form
         setFormData({
           name: "",
@@ -263,57 +271,45 @@ export default function CourierRegistration() {
             fileName: "",
           },
         ]);
-        // Scroll to top to show success message
-        window.scrollTo({ top: 0, behavior: "smooth" });
+
       } else {
         // Handle error message which can be a string or object
-        if (typeof response.ErrorMessage === "string") {
-          setSubmitError(response.ErrorMessage);
-        } else if (
-          response.ErrorMessage &&
-          typeof response.ErrorMessage === "object"
-        ) {
-          // Extract first error message from object
-          const firstKey = Object.keys(response.ErrorMessage)[0];
-          const firstError = response.ErrorMessage[firstKey];
-          setSubmitError(
-            Array.isArray(firstError) ? firstError[0] : firstError,
-          );
-        } else {
-          setSubmitError(
-            "Registration failed. Please check your information and try again.",
-          );
-        }
-        // Scroll to top to show error message
-        window.scrollTo({ top: 0, behavior: "smooth" });
+          let errorMsg = "Registration failed. Please check your information and try again.";
+          if (typeof response.ErrorMessage === "string") {
+            errorMsg = response.ErrorMessage;
+          } else if (response.ErrorMessage && typeof response.ErrorMessage === "object") {
+            const firstKey = Object.keys(response.ErrorMessage)[0];
+            const firstError = response.ErrorMessage[firstKey];
+            errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
+          }
+          toast({
+            variant: "destructive",
+            title: "Registration Failed",
+            description: errorMsg,
+          });
       }
     } catch (error: any) {
       console.error("Registration error:", error);
 
       // Handle API error response
-      if (error.response?.data?.ErrorMessage) {
-        const errMsg = error.response.data.ErrorMessage;
-        if (typeof errMsg === "string") {
-          setSubmitError(errMsg);
-        } else if (typeof errMsg === "object") {
-          const firstKey = Object.keys(errMsg)[0];
-          const firstError = errMsg[firstKey];
-          setSubmitError(
-            Array.isArray(firstError) ? firstError[0] : firstError,
-          );
-        } else {
-          setSubmitError(
-            "An error occurred during registration. Please try again.",
-          );
+        let errorMsg = "An error occurred during registration. Please try again.";
+        if (error.response?.data?.ErrorMessage) {
+          const errMsg = error.response.data.ErrorMessage;
+          if (typeof errMsg === "string") {
+            errorMsg = errMsg;
+          } else if (typeof errMsg === "object") {
+            const firstKey = Object.keys(errMsg)[0];
+            const firstError = errMsg[firstKey];
+            errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
+          }
+        } else if (error.response?.data?.message) {
+          errorMsg = error.response.data.message;
         }
-      } else {
-        setSubmitError(
-          error.response?.data?.message ||
-            "An error occurred during registration. Please try again.",
-        );
-      }
-      // Scroll to top to show error message
-      window.scrollTo({ top: 0, behavior: "smooth" });
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: errorMsg,
+        });
     } finally {
       setIsSubmitting(false);
     }
@@ -339,31 +335,7 @@ export default function CourierRegistration() {
               </div>
             </div>
 
-            {submitSuccess && (
-              <Alert className="border-green-200 bg-green-50">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertTitle className="text-green-800">
-                  Registration Submitted Successfully!
-                </AlertTitle>
-                <AlertDescription className="text-green-700">
-                  Your courier provider registration has been submitted
-                  successfully. Your application is under review. You will
-                  receive an email with login credentials once approved.
-                </AlertDescription>
-              </Alert>
-            )}
 
-            {submitError && (
-              <Alert className="border-red-200 bg-red-50">
-                <AlertCircle className="h-4 w-4 text-red-600" />
-                <AlertTitle className="text-red-800">
-                  Registration Failed
-                </AlertTitle>
-                <AlertDescription className="text-red-700">
-                  {submitError}
-                </AlertDescription>
-              </Alert>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-6 pb-8">
               <Card className="border-slate-200 shadow-sm">

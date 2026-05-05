@@ -45,9 +45,27 @@ export default function LineTrendChart({
   const getY = (value: number) =>
     height - padding - (value / maxValue) * (height - padding * 2);
 
-  const polylinePoints = points
-    .map((point, index) => `${getX(index)},${getY(point.value)}`)
-    .join(" ");
+  const generateSmoothPath = () => {
+    if (points.length === 0) return "";
+    if (points.length === 1) return `M ${getX(0)},${getY(points[0].value)}`;
+
+    let path = `M ${getX(0)},${getY(points[0].value)}`;
+    
+    for (let i = 0; i < points.length - 1; i++) {
+      const x0 = getX(i);
+      const y0 = getY(points[i].value);
+      const x1 = getX(i + 1);
+      const y1 = getY(points[i + 1].value);
+      
+      const cpX = (x0 + x1) / 2;
+      
+      path += ` C ${cpX},${y0} ${cpX},${y1} ${x1},${y1}`;
+    }
+    
+    return path;
+  };
+
+  const smoothPath = generateSmoothPath();
 
   return (
     <Card className="border-border/60 shadow-sm">
@@ -68,10 +86,10 @@ export default function LineTrendChart({
               className="stroke-border"
             />
 
-            <polyline
+            <path
+              d={smoothPath}
               fill="none"
               strokeWidth="2.5"
-              points={polylinePoints}
               className={colorClassName}
             />
 

@@ -88,13 +88,17 @@ export default function CourierRiderDetailPage() {
         availability_status: availabilityStatus,
       });
 
-      setRider(updated);
+      setRider({
+        ...rider,
+        operational_status: updated.operational_status,
+        availability_status: updated.availability_status
+      });
       setOperationalStatus(updated.operational_status);
       setAvailabilityStatus(updated.availability_status);
 
       toast({
         title: "Rider status updated",
-        description: `${updated.full_name} status is now ${updated.operational_status} / ${updated.availability_status}.`,
+        description: updated.message,
       });
     } catch (error) {
       toast({
