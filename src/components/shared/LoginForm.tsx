@@ -3,8 +3,7 @@ import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+
 
 interface LoginFormProps {
   title?: string;
@@ -12,7 +11,6 @@ interface LoginFormProps {
   hideHeader?: boolean;
   onSubmit: (email: string, password: string) => Promise<void>;
   isLoading?: boolean;
-  error?: string | null;
 }
 
 export default function LoginForm({
@@ -21,7 +19,6 @@ export default function LoginForm({
   hideHeader = false,
   onSubmit,
   isLoading = false,
-  error = null,
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,13 +38,7 @@ export default function LoginForm({
         </div>
       )}
 
-      {error && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertCircle className="h-4 w-4 text-red-600" />
-          <AlertTitle className="text-red-800">Login Failed</AlertTitle>
-          <AlertDescription className="text-red-700">{error}</AlertDescription>
-        </Alert>
-      )}
+
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">

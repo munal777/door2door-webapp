@@ -6,16 +6,16 @@ import BrandLogo from "@/components/shared/BrandLogo";
 import bgImage from "@/assets/bg.jpg";
 import { authService } from "@/services/authService";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CourierLogin() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
-    setError(null);
 
     try {
       const response = await authService.login(
@@ -28,7 +28,11 @@ export default function CourierLogin() {
 
         // Check if user is courier staff
         if (user.user_type !== "courier_staff") {
-          setError("Access denied. This portal is for courier providers only.");
+          toast({
+            variant: "destructive",
+            title: "Access Denied",
+            description: "This portal is for courier providers only.",
+          });
           return;
         }
 
@@ -38,41 +42,41 @@ export default function CourierLogin() {
         // Redirect to courier dashboard
         navigate("/courier/dashboard");
       } else {
-        // Handle error message
+        let errorMsg = "Invalid email or password. Please try again.";
         if (typeof response.ErrorMessage === "string") {
-          setError(response.ErrorMessage);
-        } else if (
-          response.ErrorMessage &&
-          typeof response.ErrorMessage === "object"
-        ) {
+          errorMsg = response.ErrorMessage;
+        } else if (response.ErrorMessage && typeof response.ErrorMessage === "object") {
           const firstKey = Object.keys(response.ErrorMessage)[0];
           const firstError = response.ErrorMessage[firstKey];
-          setError(Array.isArray(firstError) ? firstError[0] : firstError);
-        } else {
-          setError("Invalid email or password. Please try again.");
+          errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
         }
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: errorMsg,
+        });
       }
     } catch (err: any) {
       console.error("Login error:", err);
 
-      // Handle API error response
+      let errorMsg = "An error occurred during login. Please try again.";
       if (err.response?.data?.ErrorMessage) {
         const errMsg = err.response.data.ErrorMessage;
         if (typeof errMsg === "string") {
-          setError(errMsg);
+          errorMsg = errMsg;
         } else if (typeof errMsg === "object") {
           const firstKey = Object.keys(errMsg)[0];
           const firstError = errMsg[firstKey];
-          setError(Array.isArray(firstError) ? firstError[0] : firstError);
-        } else {
-          setError("An error occurred during login. Please try again.");
+          errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
         }
-      } else {
-        setError(
-          err.response?.data?.message ||
-            "An error occurred during login. Please try again.",
-        );
+      } else if (err.response?.data?.message) {
+        errorMsg = err.response.data.message;
       }
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: errorMsg,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -132,7 +136,6 @@ export default function CourierLogin() {
               hideHeader
               onSubmit={handleLogin}
               isLoading={isLoading}
-              error={error}
             />
 
             <div className="mx-auto w-full max-w-md space-y-2 text-center">

@@ -17,8 +17,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, AlertCircle, CheckCircle2, Mail } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2, Mail } from "lucide-react";
 import type { InvitationRole, SendInvitationData } from "@/types/invitation";
 
 interface SendInvitationFormProps {
@@ -29,9 +29,7 @@ export default function SendInvitationForm({
   onSuccess,
 }: SendInvitationFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const { toast } = useToast();
 
   const [formData, setFormData] = useState<SendInvitationData>({
     email: "",
@@ -51,14 +49,14 @@ export default function SendInvitationForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(false);
     setIsLoading(true);
 
     try {
       const result = await invitationService.sendInvitation(formData);
-      setSuccess(true);
-      setSuccessMessage(result.message);
+      toast({
+        title: "Invitation Sent",
+        description: result.message || "Invitation sent successfully!",
+      });
 
       // Reset form
       setFormData({
@@ -72,9 +70,11 @@ export default function SendInvitationForm({
         }, 1500);
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to send invitation",
-      );
+      toast({
+        variant: "destructive",
+        title: "Failed to Send Invitation",
+        description: err instanceof Error ? err.message : "Failed to send invitation",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -92,23 +92,7 @@ export default function SendInvitationForm({
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
-        {error && (
-          <Alert className="mb-6 border-red-200 bg-red-50">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-700">
-              {error}
-            </AlertDescription>
-          </Alert>
-        )}
 
-        {success && (
-          <Alert className="mb-6 border-green-200 bg-green-50">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-700">
-              {successMessage || "Invitation sent successfully!"}
-            </AlertDescription>
-          </Alert>
-        )}
 
         <form
           onSubmit={handleSubmit}

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 import BrandLogo from "@/components/shared/BrandLogo";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +50,7 @@ const initialFormState: FormState = {
 export default function StaffInvitationRegistrationPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { toast } = useToast();
 
   const invitationToken = searchParams.get("token")?.trim() ?? "";
 
@@ -62,8 +63,7 @@ export default function StaffInvitationRegistrationPage() {
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const roleLabel = useMemo(() => {
     if (!invitationInfo) return "Staff";
@@ -75,9 +75,12 @@ export default function StaffInvitationRegistrationPage() {
   useEffect(() => {
     const validateToken = async () => {
       if (!invitationToken) {
-        setValidationError(
-          "Invitation link is missing a token. Please use the registration link sent to your email.",
-        );
+        toast({
+          variant: "destructive",
+          title: "Invalid Link",
+          description: "Invitation link is missing a token. Please use the registration link sent to your email.",
+        });
+        setValidationError("Invitation link is missing a token.");
         setIsValidatingToken(false);
         return;
       }
@@ -92,11 +95,13 @@ export default function StaffInvitationRegistrationPage() {
         setInvitationInfo(result);
         setForm((prev) => ({ ...prev, email: result.email }));
       } catch (error) {
-        setValidationError(
-          error instanceof Error
-            ? error.message
-            : "Invitation link is invalid or expired.",
-        );
+        const errMsg = error instanceof Error ? error.message : "Invitation link is invalid or expired.";
+        setValidationError(errMsg);
+        toast({
+          variant: "destructive",
+          title: "Invalid Invitation Link",
+          description: errMsg,
+        });
       } finally {
         setIsValidatingToken(false);
       }
@@ -134,17 +139,24 @@ export default function StaffInvitationRegistrationPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(null);
+    event.preventDefault();
 
     const formError = validateForm();
     if (formError) {
-      setSubmitError(formError);
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: formError,
+      });
       return;
     }
 
     if (!invitationToken) {
-      setSubmitError("Invitation token is missing.");
+      toast({
+        variant: "destructive",
+        title: "Registration Failed",
+        description: "Invitation token is missing.",
+      });
       return;
     }
 
@@ -163,17 +175,20 @@ export default function StaffInvitationRegistrationPage() {
         },
       });
 
-      setSubmitSuccess(
-        response.message ||
-          "Registration completed successfully. You can now sign in.",
-      );
+      const successMsg = response.message || "Registration completed successfully. You can now sign in.";
+      setSubmitSuccess(true);
+      toast({
+        title: "Registration Complete",
+        description: successMsg,
+      });
       setForm(initialFormState);
     } catch (error) {
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Unable to complete registration.",
-      );
+      const errMsg = error instanceof Error ? error.message : "Unable to complete registration.";
+      toast({
+        variant: "destructive",
+        title: "Registration Failed",
+        description: errMsg,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -239,22 +254,22 @@ export default function StaffInvitationRegistrationPage() {
             )}
 
             {!isValidatingToken && validationError && (
-              <Alert className="border-red-200 bg-red-50">
-                <AlertCircle className="h-4 w-4 text-red-600" />
-                <AlertTitle className="text-red-800">
-                  Invalid Invitation Link
-                </AlertTitle>
-                <AlertDescription className="space-y-4 text-red-700">
-                  <p>{validationError}</p>
-                  <Button
-                    type="button"
-                    onClick={() => navigate("/courier/login")}
-                    className="bg-amber-600 hover:bg-amber-700"
-                  >
-                    Go to Courier Login
-                  </Button>
-                </AlertDescription>
-              </Alert>
+              <div className="flex flex-col items-center justify-center space-y-4 py-8 text-center rounded-xl border border-red-100 bg-red-50/50 p-8">
+                <div className="rounded-full bg-red-100 p-3">
+                  <AlertCircle className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-slate-900">Invalid Invitation Link</h3>
+                  <p className="mt-2 text-sm text-slate-500">{validationError}</p>
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => navigate("/courier/login")}
+                  className="mt-4 bg-amber-600 hover:bg-amber-700"
+                >
+                  Go to Courier Login
+                </Button>
+              </div>
             )}
 
             {!isValidatingToken && !validationError && invitationInfo && (
@@ -271,34 +286,22 @@ export default function StaffInvitationRegistrationPage() {
                 </div>
 
                 {submitSuccess && (
-                  <Alert className="border-green-200 bg-green-50">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    <AlertTitle className="text-green-800">
-                      Registration Complete
-                    </AlertTitle>
-                    <AlertDescription className="space-y-3 text-green-700">
-                      <p>{submitSuccess}</p>
-                      <Button
-                        type="button"
-                        onClick={() => navigate("/courier/login")}
-                        className="bg-amber-600 hover:bg-amber-700"
-                      >
-                        Continue to Login
-                      </Button>
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                {submitError && (
-                  <Alert className="border-red-200 bg-red-50">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                    <AlertTitle className="text-red-800">
-                      Registration Failed
-                    </AlertTitle>
-                    <AlertDescription className="text-red-700">
-                      {submitError}
-                    </AlertDescription>
-                  </Alert>
+                  <div className="flex flex-col items-center justify-center space-y-4 py-8 text-center rounded-xl border border-green-100 bg-green-50/50 p-8">
+                    <div className="rounded-full bg-green-100 p-3">
+                      <CheckCircle2 className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-slate-900">Registration Complete</h3>
+                      <p className="mt-2 text-sm text-slate-500">You can now sign in with your credentials.</p>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => navigate("/courier/login")}
+                      className="mt-4 bg-amber-600 hover:bg-amber-700"
+                    >
+                      Continue to Login
+                    </Button>
+                  </div>
                 )}
 
                 {!submitSuccess && (

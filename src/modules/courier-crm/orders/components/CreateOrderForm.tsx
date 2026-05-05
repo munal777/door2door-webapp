@@ -19,11 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
 import {
   Loader2,
-  AlertCircle,
-  CheckCircle2,
   Package,
   User,
   MapPin,
@@ -36,8 +34,7 @@ interface CreateOrderFormProps {
 
 export default function CreateOrderForm({ onSuccess }: CreateOrderFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const { toast } = useToast();
 
   // Display values for the typeaheads
   const [senderLocationDisplay, setSenderLocationDisplay] = useState("");
@@ -122,13 +119,14 @@ export default function CreateOrderForm({ onSuccess }: CreateOrderFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(false);
     setIsLoading(true);
 
     try {
       await orderService.createOrder(formData);
-      setSuccess(true);
+      toast({
+        title: "Order Created Successfully",
+        description: "The order has been created.",
+      });
 
       // Reset form and display values
       setFormData({
@@ -164,7 +162,11 @@ export default function CreateOrderForm({ onSuccess }: CreateOrderFormProps) {
         }, 1500);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create order");
+      toast({
+        variant: "destructive",
+        title: "Failed to Create Order",
+        description: err instanceof Error ? err.message : "Failed to create order",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -186,23 +188,7 @@ export default function CreateOrderForm({ onSuccess }: CreateOrderFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {error && (
-          <Alert className="mb-4 border-red-200 bg-red-50">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-700">
-              {error}
-            </AlertDescription>
-          </Alert>
-        )}
 
-        {success && (
-          <Alert className="mb-4 border-green-200 bg-green-50">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-700">
-              Order created successfully!
-            </AlertDescription>
-          </Alert>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Service Type & Payment Type - Top Row */}
