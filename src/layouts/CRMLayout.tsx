@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Menu, X, LogOut, User as UserIcon } from "lucide-react";
+import { Menu, LogOut, User as UserIcon } from "lucide-react";
 import CrmSidebar from "@/components/shared/crm/CrmSidebar";
 import BrandLogo from "@/components/shared/BrandLogo";
 import { Button } from "@/components/ui/button";
