@@ -26,7 +26,6 @@ import {
   Bike,
   Loader2,
   Mail,
-  MapPin,
   Phone,
   UserRound,
 } from "lucide-react";

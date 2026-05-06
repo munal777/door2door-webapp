@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { riderService } from "@/services/riderService";
 import type {
   ActiveRiderAssignment,
@@ -44,7 +43,6 @@ import {
 } from "lucide-react";
 
 export default function RiderOrdersPage() {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
