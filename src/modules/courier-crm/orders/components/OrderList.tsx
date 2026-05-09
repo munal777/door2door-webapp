@@ -43,6 +43,7 @@ const statusColors: Record<string, string> = {
   confirmed: "bg-blue-100 text-blue-800 border-blue-200",
   picked_up: "bg-purple-100 text-purple-800 border-purple-200",
   in_transit: "bg-amber-100 text-amber-800 border-amber-200",
+  delivery_assigned: "bg-orange-50 text-orange-800 border-orange-200",
   out_for_delivery: "bg-orange-100 text-orange-800 border-orange-200",
   delivered: "bg-emerald-100 text-emerald-800 border-emerald-200",
   cancelled: "bg-red-100 text-red-800 border-red-200",
@@ -257,6 +258,12 @@ export default function OrderList({ onViewOrder }: OrderListProps) {
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-orange-500"></div>
                         Out for Delivery
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="delivery_assigned">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-orange-400"></div>
+                        Delivery Assigned
                       </div>
                     </SelectItem>
                     <SelectItem value="delivered">

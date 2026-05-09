@@ -48,21 +48,24 @@ export default function RiderOrdersPage() {
   const [assigning, setAssigning] = useState(false);
 
   const [riders, setRiders] = useState<CourierRider[]>([]);
-  const [activeAssignments, setActiveAssignments] = useState<ActiveRiderAssignment[]>([]);
-  const [assignableOrders, setAssignableOrders] = useState<AssignableOnlineOrder[]>([]);
+  const [activeAssignments, setActiveAssignments] = useState<
+    ActiveRiderAssignment[]
+  >([]);
+  const [assignableOrders, setAssignableOrders] = useState<
+    AssignableOnlineOrder[]
+  >([]);
 
-  const [assignmentType, setAssignmentType] = useState<"pickup" | "delivery">("pickup");
-  const [selectedOrderNumbers, setSelectedOrderNumbers] = useState<string[]>([]);
+  const [assignmentType, setAssignmentType] = useState<"pickup" | "delivery">(
+    "pickup",
+  );
+  const [selectedOrderNumbers, setSelectedOrderNumbers] = useState<string[]>(
+    [],
+  );
   const [selectedRiderId, setSelectedRiderId] = useState<string>("");
   const [notes, setNotes] = useState("");
 
-  const availableRiders = useMemo(
-    () =>
-      riders.filter(
-        (rider) =>
-          rider.operational_status === "active" &&
-          rider.availability_status === "available",
-      ),
+  const eligibleRiders = useMemo(
+    () => riders.filter((rider) => rider.operational_status === "active"),
     [riders],
   );
 
@@ -86,7 +89,8 @@ export default function RiderOrdersPage() {
       toast({
         variant: "destructive",
         title: "Failed to load data",
-        description: error instanceof Error ? error.message : "Error loading data",
+        description:
+          error instanceof Error ? error.message : "Error loading data",
       });
     } finally {
       if (!silent) setLoading(false);
@@ -102,7 +106,7 @@ export default function RiderOrdersPage() {
     setSelectedOrderNumbers((prev) =>
       prev.includes(orderNumber)
         ? prev.filter((n) => n !== orderNumber)
-        : [...prev, orderNumber]
+        : [...prev, orderNumber],
     );
   };
 
@@ -116,11 +120,19 @@ export default function RiderOrdersPage() {
 
   const handleBulkAssign = async () => {
     if (!selectedRiderId) {
-      toast({ variant: "destructive", title: "Rider required", description: "Select a rider first." });
+      toast({
+        variant: "destructive",
+        title: "Rider required",
+        description: "Select a rider first.",
+      });
       return;
     }
     if (selectedOrderNumbers.length === 0) {
-      toast({ variant: "destructive", title: "Orders required", description: "Select at least one parcel." });
+      toast({
+        variant: "destructive",
+        title: "Orders required",
+        description: "Select at least one parcel.",
+      });
       return;
     }
 
@@ -144,7 +156,8 @@ export default function RiderOrdersPage() {
       toast({
         variant_dest: "destructive",
         title: "Assignment failed",
-        description: error instanceof Error ? error.message : "Error assigning orders",
+        description:
+          error instanceof Error ? error.message : "Error assigning orders",
       } as any);
     } finally {
       setAssigning(false);
@@ -152,8 +165,12 @@ export default function RiderOrdersPage() {
   };
 
   const getAvailabilityBadge = (status: string) => {
-    if (status === "available") return <Badge className="bg-emerald-100 text-emerald-700">Available</Badge>;
-    if (status === "busy") return <Badge className="bg-amber-100 text-amber-700">Busy</Badge>;
+    if (status === "available")
+      return (
+        <Badge className="bg-emerald-100 text-emerald-700">Available</Badge>
+      );
+    if (status === "busy")
+      return <Badge className="bg-amber-100 text-amber-700">Busy</Badge>;
     return <Badge variant="secondary">{status}</Badge>;
   };
 
@@ -161,9 +178,12 @@ export default function RiderOrdersPage() {
     <div className="p-3 sm:p-4 md:p-6 space-y-6 max-w-[1600px] mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Dispatch Control</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            Dispatch Control
+          </h1>
           <p className="text-muted-foreground mt-1">
-            Streamlined bulk assignment workflow for efficient last-mile delivery.
+            Streamlined bulk assignment workflow for efficient last-mile
+            delivery.
           </p>
         </div>
         <div className="flex bg-muted p-1 rounded-lg">
@@ -195,20 +215,32 @@ export default function RiderOrdersPage() {
                 <Bike className="h-5 w-5 text-primary" />
                 1. Select Rider
               </CardTitle>
-              <CardDescription>Choose an available rider to receive parcels.</CardDescription>
+              <CardDescription>
+                Assign parcels now or queue them for a busy rider.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Rider Pool ({availableRiders.length} Available)</Label>
-                <Select value={selectedRiderId} onValueChange={setSelectedRiderId}>
+                <Label>Rider Pool ({eligibleRiders.length} Eligible)</Label>
+                <Select
+                  value={selectedRiderId}
+                  onValueChange={setSelectedRiderId}
+                >
                   <SelectTrigger className="h-12 border-primary/20 bg-primary/5">
                     <SelectValue placeholder="Choose a rider..." />
                   </SelectTrigger>
                   <SelectContent>
-                    {availableRiders.map((rider) => (
+                    {eligibleRiders.map((rider) => (
                       <SelectItem key={rider.id} value={String(rider.id)}>
                         <div className="flex flex-col">
-                          <span className="font-medium">{rider.full_name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">
+                              {rider.full_name}
+                            </span>
+                            <span className="text-[10px] uppercase text-muted-foreground">
+                              {rider.availability_status}
+                            </span>
+                          </div>
                           <span className="text-xs text-muted-foreground">
                             {rider.vehicle_type} • {rider.vehicle_number}
                           </span>
@@ -226,7 +258,9 @@ export default function RiderOrdersPage() {
                       <UserRound className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-bold leading-none">{selectedRider.full_name}</p>
+                      <p className="font-bold leading-none">
+                        {selectedRider.full_name}
+                      </p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {selectedRider.phone_number}
                       </p>
@@ -234,7 +268,9 @@ export default function RiderOrdersPage() {
                   </div>
                   <div className="flex gap-2">
                     {getAvailabilityBadge(selectedRider.availability_status)}
-                    <Badge variant="outline">{selectedRider.vehicle_type}</Badge>
+                    <Badge variant="outline">
+                      {selectedRider.vehicle_type}
+                    </Badge>
                   </div>
                 </div>
               )}
@@ -253,13 +289,19 @@ export default function RiderOrdersPage() {
 
               <div className="pt-4 border-t border-dashed">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm text-muted-foreground">Parcels Selected:</span>
-                  <span className="text-xl font-bold text-primary">{selectedOrderNumbers.length}</span>
+                  <span className="text-sm text-muted-foreground">
+                    Parcels Selected:
+                  </span>
+                  <span className="text-xl font-bold text-primary">
+                    {selectedOrderNumbers.length}
+                  </span>
                 </div>
                 <Button
                   className="w-full h-12 text-lg shadow-xl"
                   onClick={handleBulkAssign}
-                  disabled={assigning || loading || selectedOrderNumbers.length === 0}
+                  disabled={
+                    assigning || loading || selectedOrderNumbers.length === 0
+                  }
                 >
                   {assigning ? (
                     <Loader2 className="h-5 w-5 mr-2 animate-spin" />
@@ -293,7 +335,11 @@ export default function RiderOrdersPage() {
                         <input
                           type="checkbox"
                           className="h-4 w-4 rounded border-gray-300 accent-primary"
-                          checked={assignableOrders.length > 0 && selectedOrderNumbers.length === assignableOrders.length}
+                          checked={
+                            assignableOrders.length > 0 &&
+                            selectedOrderNumbers.length ===
+                              assignableOrders.length
+                          }
                           onChange={toggleSelectAll}
                         />
                       </TableHead>
@@ -306,36 +352,55 @@ export default function RiderOrdersPage() {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                        <TableCell
+                          colSpan={5}
+                          className="h-32 text-center text-muted-foreground"
+                        >
                           <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
                           Loading assignable orders...
                         </TableCell>
                       </TableRow>
                     ) : assignableOrders.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
+                        <TableCell
+                          colSpan={5}
+                          className="h-32 text-center text-muted-foreground"
+                        >
                           No {assignmentType} orders found.
                         </TableCell>
                       </TableRow>
                     ) : (
                       assignableOrders.map((order) => (
-                        <TableRow 
-                          key={order.id} 
-                          className={`cursor-pointer transition-colors hover:bg-muted/30 ${selectedOrderNumbers.includes(order.order_number) ? 'bg-primary/5' : ''}`}
-                          onClick={() => toggleOrderSelection(order.order_number)}
+                        <TableRow
+                          key={order.id}
+                          className={`cursor-pointer transition-colors hover:bg-muted/30 ${selectedOrderNumbers.includes(order.order_number) ? "bg-primary/5" : ""}`}
+                          onClick={() =>
+                            toggleOrderSelection(order.order_number)
+                          }
                         >
-                          <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
+                          <TableCell
+                            className="text-center"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <input
                               type="checkbox"
                               className="h-4 w-4 rounded border-gray-300 accent-primary"
-                              checked={selectedOrderNumbers.includes(order.order_number)}
-                              onChange={() => toggleOrderSelection(order.order_number)}
+                              checked={selectedOrderNumbers.includes(
+                                order.order_number,
+                              )}
+                              onChange={() =>
+                                toggleOrderSelection(order.order_number)
+                              }
                             />
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col">
-                              <span className="font-bold text-primary">{order.order_number}</span>
-                              <span className="text-xs text-muted-foreground">{order.order_type_display}</span>
+                              <span className="font-bold text-primary">
+                                {order.order_number}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {order.order_type_display}
+                              </span>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -343,27 +408,38 @@ export default function RiderOrdersPage() {
                               <div className="flex items-start gap-1 text-sm">
                                 <MapPin className="h-3.5 w-3.5 mt-0.5 text-rose-500 shrink-0" />
                                 <span className="line-clamp-1">
-                                  <span className="font-medium">{order.sender_city}</span>: {order.sender_address}
+                                  <span className="font-medium">
+                                    {order.sender_city}
+                                  </span>
+                                  : {order.sender_address}
                                 </span>
                               </div>
                               <div className="flex items-start gap-1 text-sm opacity-70">
                                 <MapPin className="h-3.5 w-3.5 mt-0.5 text-emerald-500 shrink-0" />
                                 <span className="line-clamp-1">
-                                  <span className="font-medium">{order.receiver_city}</span>: {order.receiver_address}
+                                  <span className="font-medium">
+                                    {order.receiver_city}
+                                  </span>
+                                  : {order.receiver_address}
                                 </span>
                               </div>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col">
-                              <span className="text-sm font-medium">{order.package_type_display}</span>
+                              <span className="text-sm font-medium">
+                                {order.package_type_display}
+                              </span>
                               <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
                                 {order.service_type_display}
                               </span>
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
-                            <Badge variant="secondary" className="font-normal text-[10px] uppercase tracking-tighter">
+                            <Badge
+                              variant="secondary"
+                              className="font-normal text-[10px] uppercase tracking-tighter"
+                            >
                               {order.status_display}
                             </Badge>
                           </TableCell>
@@ -417,10 +493,17 @@ export default function RiderOrdersPage() {
                       <TableCell className="font-bold text-primary">
                         {assignment.order_number}
                       </TableCell>
-                      <TableCell className="font-medium">{assignment.rider_name}</TableCell>
-                      <TableCell className="text-muted-foreground text-xs">{assignment.rider_phone}</TableCell>
+                      <TableCell className="font-medium">
+                        {assignment.rider_name}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-xs">
+                        {assignment.rider_phone}
+                      </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="text-[10px] uppercase">
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] uppercase"
+                        >
                           {assignment.order_status}
                         </Badge>
                       </TableCell>

@@ -57,19 +57,19 @@ export const OrderTrackingSearch: React.FC = () => {
     const statusLower = status.toLowerCase();
 
     if (statusLower.includes("delivered")) {
-      return <CheckCircle className="text-green-500" size={20} />;
+      return <CheckCircle size={20} />;
     } else if (
       statusLower.includes("cancelled") ||
       statusLower.includes("returned")
     ) {
-      return <XCircle className="text-red-500" size={20} />;
+      return <XCircle size={20} />;
     } else if (
       statusLower.includes("transit") ||
       statusLower.includes("pickup")
     ) {
-      return <Truck className="text-primary" size={20} />;
+      return <Truck size={20} />;
     } else {
-      return <Package className="text-gray-500" size={20} />;
+      return <Package size={20} />;
     }
   };
 
@@ -77,18 +77,16 @@ export const OrderTrackingSearch: React.FC = () => {
     const statusLower = status.toLowerCase();
 
     if (statusLower.includes("delivered")) {
-      return "bg-green-100 text-green-800 border-green-300";
+      return "bg-green-50 text-green-700 border-green-200";
     } else if (
       statusLower.includes("cancelled") ||
       statusLower.includes("returned")
     ) {
-      return "bg-red-100 text-red-800 border-red-300";
+      return "bg-red-50 text-red-700 border-red-200";
     } else if (statusLower.includes("transit")) {
-      return "bg-secondary text-foreground border-primary/40";
-    } else if (statusLower.includes("destination")) {
-      return "bg-secondary text-foreground border-primary/40";
+      return "bg-blue-50 text-blue-700 border-blue-200";
     } else {
-      return "bg-gray-100 text-gray-800 border-gray-300";
+      return "bg-gray-50 text-gray-700 border-gray-200";
     }
   };
 
@@ -153,10 +151,10 @@ export const OrderTrackingSearch: React.FC = () => {
                 {/* Timeline Icon */}
                 <div className="flex flex-col items-center">
                   <div
-                    className={`p-3 rounded-full ${
+                    className={`p-3 rounded-full flex items-center justify-center transition-colors ${
                       index === 0
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-white border-2 border-gray-300"
+                        ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                        : "bg-gray-50 text-gray-400 border border-gray-200"
                     }`}
                   >
                     {getStatusIcon(event.status)}
@@ -167,25 +165,23 @@ export const OrderTrackingSearch: React.FC = () => {
                 </div>
 
                 {/* Event Details */}
-                <div className="flex-1 pt-2">
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-semibold text-gray-800">
+                <div className="flex-1 pt-1.5">
+                  <div className={`rounded-xl p-5 border transition-colors ${
+                    index === 0 
+                      ? "bg-white border-primary/20 shadow-sm" 
+                      : "bg-gray-50/50 border-gray-100"
+                  }`}>
+                    <div className="flex items-start justify-between mb-3">
+                      <h4 className={`font-bold ${index === 0 ? 'text-gray-900' : 'text-gray-700'}`}>
                         {event.status
                           .replace(/_/g, " ")
                           .replace(/\b\w/g, (l) => l.toUpperCase())}
                       </h4>
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full ${
-                          index === 0
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-gray-200 text-gray-600"
-                        }`}
-                      >
-                        {index === 0
-                          ? "Latest"
-                          : `${index + 1}/${tracking.length}`}
-                      </span>
+                      {index === 0 && (
+                        <span className="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+                          Latest
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">

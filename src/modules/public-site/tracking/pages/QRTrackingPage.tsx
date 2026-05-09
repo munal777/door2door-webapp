@@ -113,7 +113,10 @@ export const QRTrackingPage: React.FC = () => {
           size={size}
         />
       );
-    } else if (statusLower.includes("out_for_delivery")) {
+    } else if (
+      statusLower.includes("out_for_delivery") ||
+      statusLower.includes("delivery_assigned")
+    ) {
       return (
         <CarFront
           className={isColored ? "text-orange-600" : colorClass}
@@ -150,7 +153,10 @@ export const QRTrackingPage: React.FC = () => {
       statusLower.includes("returned")
     ) {
       return "from-red-500 to-red-600";
-    } else if (statusLower.includes("out_for_delivery")) {
+    } else if (
+      statusLower.includes("out_for_delivery") ||
+      statusLower.includes("delivery_assigned")
+    ) {
       return "from-orange-500 to-orange-600";
     } else if (statusLower.includes("transit")) {
       return "from-blue-500 to-blue-600";

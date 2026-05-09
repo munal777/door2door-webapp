@@ -19,24 +19,89 @@ interface OrderStatusUpdateFormProps {
 }
 
 const STATUS_OPTIONS = [
-  { value: "pending", label: "Pending", color: "bg-gray-100 text-gray-700 border-gray-200" },
-  { value: "confirmed", label: "Confirmed", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  { value: "pickup_assigned", label: "Pickup Assigned", color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
-  { value: "picked_up", label: "Picked Up", color: "bg-purple-100 text-purple-700 border-purple-200" },
-  { value: "at_origin_hub", label: "At Origin Hub", color: "bg-cyan-100 text-cyan-700 border-cyan-200" },
-  { value: "in_transit", label: "In Transit", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  { value: "at_destination_hub", label: "At Destination Hub", color: "bg-orange-100 text-orange-700 border-orange-200" },
-  { value: "out_for_delivery", label: "Out for Delivery", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-  { value: "delivered", label: "Delivered", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "cancelled", label: "Cancelled", color: "bg-red-100 text-red-700 border-red-200" },
-  { value: "returned", label: "Returned", color: "bg-rose-100 text-rose-700 border-rose-200" },
+  {
+    value: "pending",
+    label: "Pending",
+    color: "bg-gray-100 text-gray-700 border-gray-200",
+  },
+  {
+    value: "confirmed",
+    label: "Confirmed",
+    color: "bg-blue-100 text-blue-700 border-blue-200",
+  },
+  {
+    value: "pickup_assigned",
+    label: "Pickup Assigned",
+    color: "bg-indigo-100 text-indigo-700 border-indigo-200",
+  },
+  {
+    value: "picked_up",
+    label: "Picked Up",
+    color: "bg-purple-100 text-purple-700 border-purple-200",
+  },
+  {
+    value: "at_origin_hub",
+    label: "At Origin Hub",
+    color: "bg-cyan-100 text-cyan-700 border-cyan-200",
+  },
+  {
+    value: "in_transit",
+    label: "In Transit",
+    color: "bg-amber-100 text-amber-700 border-amber-200",
+  },
+  {
+    value: "at_destination_hub",
+    label: "At Destination Hub",
+    color: "bg-orange-100 text-orange-700 border-orange-200",
+  },
+  {
+    value: "delivery_assigned",
+    label: "Delivery Assigned",
+    color: "bg-orange-50 text-orange-700 border-orange-200",
+  },
+  {
+    value: "out_for_delivery",
+    label: "Out for Delivery",
+    color: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  },
+  {
+    value: "delivered",
+    label: "Delivered",
+    color: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  },
+  {
+    value: "cancelled",
+    label: "Cancelled",
+    color: "bg-red-100 text-red-700 border-red-200",
+  },
+  {
+    value: "returned",
+    label: "Returned",
+    color: "bg-rose-100 text-rose-700 border-rose-200",
+  },
 ] as const;
 
 const PAYMENT_STATUS_OPTIONS = [
-  { value: "pending", label: "Pending", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-  { value: "paid", label: "Paid", color: "bg-green-100 text-green-700 border-green-200" },
-  { value: "failed", label: "Failed", color: "bg-red-100 text-red-700 border-red-200" },
-  { value: "refunded", label: "Refunded", color: "bg-slate-100 text-slate-700 border-slate-200" },
+  {
+    value: "pending",
+    label: "Pending",
+    color: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  },
+  {
+    value: "paid",
+    label: "Paid",
+    color: "bg-green-100 text-green-700 border-green-200",
+  },
+  {
+    value: "failed",
+    label: "Failed",
+    color: "bg-red-100 text-red-700 border-red-200",
+  },
+  {
+    value: "refunded",
+    label: "Refunded",
+    color: "bg-slate-100 text-slate-700 border-slate-200",
+  },
 ] as const;
 
 const PAYMENT_METHOD_OPTIONS = [
@@ -57,10 +122,15 @@ function currentPaymentMethodValue(display: string): string {
   return d.replace(/\s+/g, "_");
 }
 
-export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusUpdateFormProps) {
+export default function OrderStatusUpdateForm({
+  order,
+  onUpdated,
+}: OrderStatusUpdateFormProps) {
   const currentStatus = currentStatusValue(order.status_display);
   const currentPaymentStatus = currentStatusValue(order.payment_status_display);
-  const currentPaymentMethod = currentPaymentMethodValue(order.payment_method_display);
+  const currentPaymentMethod = currentPaymentMethodValue(
+    order.payment_method_display,
+  );
 
   const [status, setStatus] = useState(currentStatus);
   const [paymentStatus, setPaymentStatus] = useState(currentPaymentStatus);
@@ -71,7 +141,7 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
   const [error, setError] = useState<string | null>(null);
 
   const hasChanges =
-    status !== currentStatus || 
+    status !== currentStatus ||
     paymentStatus !== currentPaymentStatus ||
     paymentMethod !== currentPaymentMethod;
 
@@ -82,13 +152,21 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
     setSuccess(false);
 
     const payload: OrderUpdateData = {};
-    if (status !== currentStatus) payload.status = status as OrderUpdateData["status"];
-    if (paymentStatus !== currentPaymentStatus) payload.payment_status = paymentStatus as OrderUpdateData["payment_status"];
-    if (paymentMethod !== currentPaymentMethod) payload.payment_method = paymentMethod as OrderUpdateData["payment_method"];
+    if (status !== currentStatus)
+      payload.status = status as OrderUpdateData["status"];
+    if (paymentStatus !== currentPaymentStatus)
+      payload.payment_status =
+        paymentStatus as OrderUpdateData["payment_status"];
+    if (paymentMethod !== currentPaymentMethod)
+      payload.payment_method =
+        paymentMethod as OrderUpdateData["payment_method"];
     if (remarks.trim()) payload.remarks = remarks.trim();
 
     try {
-      const updated = await orderService.updateOrder(order.order_number, payload);
+      const updated = await orderService.updateOrder(
+        order.order_number,
+        payload,
+      );
       onUpdated(updated);
       setSuccess(true);
       setRemarks("");
@@ -108,31 +186,48 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
     setError(null);
   };
 
-  const currentStatusOption = STATUS_OPTIONS.find((o) => o.value === currentStatus);
-  const currentPaymentOption = PAYMENT_STATUS_OPTIONS.find((o) => o.value === currentPaymentStatus);
-  const currentMethodOption = PAYMENT_METHOD_OPTIONS.find((o) => o.value === currentPaymentMethod);
+  const currentStatusOption = STATUS_OPTIONS.find(
+    (o) => o.value === currentStatus,
+  );
+  const currentPaymentOption = PAYMENT_STATUS_OPTIONS.find(
+    (o) => o.value === currentPaymentStatus,
+  );
+  const currentMethodOption = PAYMENT_METHOD_OPTIONS.find(
+    (o) => o.value === currentPaymentMethod,
+  );
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold text-gray-800">Status Update</h3>
-          <p className="text-xs text-gray-500 mt-0.5">Update order and payment status</p>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Update order and payment status
+          </p>
         </div>
         <div className="flex gap-2">
           <span className="text-xs text-gray-500">Current:</span>
           {currentStatusOption && (
-            <Badge variant="outline" className={`text-xs ${currentStatusOption.color}`}>
+            <Badge
+              variant="outline"
+              className={`text-xs ${currentStatusOption.color}`}
+            >
               {currentStatusOption.label}
             </Badge>
           )}
           {currentPaymentOption && (
-            <Badge variant="outline" className={`text-xs ${currentPaymentOption.color}`}>
+            <Badge
+              variant="outline"
+              className={`text-xs ${currentPaymentOption.color}`}
+            >
               {currentPaymentOption.label}
             </Badge>
           )}
           {currentMethodOption && (
-            <Badge variant="outline" className="text-xs bg-gray-100 text-gray-700 border-gray-200">
+            <Badge
+              variant="outline"
+              className="text-xs bg-gray-100 text-gray-700 border-gray-200"
+            >
               {currentMethodOption.label}
             </Badge>
           )}
@@ -161,14 +256,16 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
                         opt.value === "delivered"
                           ? "bg-emerald-500"
                           : opt.value === "cancelled"
-                          ? "bg-red-500"
-                          : opt.value === "in_transit"
-                          ? "bg-amber-500"
-                          : opt.value === "confirmed"
-                          ? "bg-blue-500"
-                          : opt.value === "out_for_delivery"
-                          ? "bg-yellow-500"
-                          : "bg-gray-400"
+                            ? "bg-red-500"
+                            : opt.value === "in_transit"
+                              ? "bg-amber-500"
+                              : opt.value === "confirmed"
+                                ? "bg-blue-500"
+                                : opt.value === "delivery_assigned"
+                                  ? "bg-orange-500"
+                                  : opt.value === "out_for_delivery"
+                                    ? "bg-yellow-500"
+                                    : "bg-gray-400"
                       }`}
                     />
                     {opt.label}
@@ -200,10 +297,10 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
                         opt.value === "paid"
                           ? "bg-green-500"
                           : opt.value === "failed"
-                          ? "bg-red-500"
-                          : opt.value === "refunded"
-                          ? "bg-slate-500"
-                          : "bg-yellow-500"
+                            ? "bg-red-500"
+                            : opt.value === "refunded"
+                              ? "bg-slate-500"
+                              : "bg-yellow-500"
                       }`}
                     />
                     {opt.label}
@@ -239,7 +336,8 @@ export default function OrderStatusUpdateForm({ order, onUpdated }: OrderStatusU
         {/* Optional Remarks */}
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1.5">
-            Remarks <span className="text-gray-400 font-normal">(optional)</span>
+            Remarks{" "}
+            <span className="text-gray-400 font-normal">(optional)</span>
           </label>
           <Textarea
             id="crm-status-remarks"

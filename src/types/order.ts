@@ -111,7 +111,7 @@ export interface CreateOrderData {
 
 export interface OrderUpdateData {
   // Status updates
-  status?: 'pending' | 'confirmed' | 'pickup_assigned' | 'picked_up' | 'at_origin_hub' | 'in_transit' | 'at_destination_hub' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned';
+  status?: 'pending' | 'confirmed' | 'pickup_assigned' | 'picked_up' | 'at_origin_hub' | 'in_transit' | 'at_destination_hub' | 'delivery_assigned' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned';
   payment_status?: 'pending' | 'paid' | 'failed' | 'refunded';
   payment_method?: 'cod' | 'esewa' | 'sender_prepaid';
   remarks?: string;
@@ -148,6 +148,7 @@ export interface OrderStats {
     confirmed: number;
     picked_up: number;
     in_transit: number;
+    delivery_assigned: number;
     out_for_delivery: number;
     delivered: number;
     cancelled: number;
