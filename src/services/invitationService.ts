@@ -49,16 +49,23 @@ export const invitationService = {
    * Send an invitation (rider/admin/operations)
    */
   sendInvitation: async (invitationData: SendInvitationData): Promise<{ message: string }> => {
-    const response = await api.post<ApiResponse<{ message: string }>>(
-      API_ENDPOINTS.INVITATIONS.SEND,
-      invitationData
-    );
-    
-    if (!response.data.IsSuccess) {
-      const message = normalizeApiErrorMessage(response.data.ErrorMessage);
-      throw new Error(message || 'Failed to send invitation');
+    try {
+      const response = await api.post<ApiResponse<{ message: string }>>(
+        API_ENDPOINTS.INVITATIONS.SEND,
+        invitationData
+      );
+      
+      if (!response.data.IsSuccess) {
+        const message = normalizeApiErrorMessage(response.data.ErrorMessage);
+        throw new Error(message || 'Failed to send invitation');
+      }
+      return response.data.Result;
+    } catch (error: any) {
+      if (error.response?.data?.ErrorMessage) {
+        throw new Error(normalizeApiErrorMessage(error.response.data.ErrorMessage) || 'Failed to send invitation');
+      }
+      throw error;
     }
-    return response.data.Result;
   },
 
   /**
@@ -69,44 +76,65 @@ export const invitationService = {
     
     if (filters?.status) params.append('status', filters.status);
 
-    const response = await api.get<ApiResponse<InvitationListResponse>>(
-      `${API_ENDPOINTS.INVITATIONS.LIST}?${params.toString()}`
-    );
-    
-    if (!response.data.IsSuccess) {
-      const message = normalizeApiErrorMessage(response.data.ErrorMessage);
-      throw new Error(message || 'Failed to fetch invitations');
+    try {
+      const response = await api.get<ApiResponse<InvitationListResponse>>(
+        `${API_ENDPOINTS.INVITATIONS.LIST}?${params.toString()}`
+      );
+      
+      if (!response.data.IsSuccess) {
+        const message = normalizeApiErrorMessage(response.data.ErrorMessage);
+        throw new Error(message || 'Failed to fetch invitations');
+      }
+      return response.data.Result;
+    } catch (error: any) {
+      if (error.response?.data?.ErrorMessage) {
+        throw new Error(normalizeApiErrorMessage(error.response.data.ErrorMessage) || 'Failed to fetch invitations');
+      }
+      throw error;
     }
-    return response.data.Result;
   },
 
   /**
    * Get invitation details by ID
    */
   getInvitationDetail: async (invitationId: number): Promise<ProviderInvitation> => {
-    const response = await api.get<ApiResponse<ProviderInvitation>>(
-      API_ENDPOINTS.INVITATIONS.DETAIL(invitationId)
-    );
-    
-    if (!response.data.IsSuccess) {
-      const message = normalizeApiErrorMessage(response.data.ErrorMessage);
-      throw new Error(message || 'Failed to fetch invitation details');
+    try {
+      const response = await api.get<ApiResponse<ProviderInvitation>>(
+        API_ENDPOINTS.INVITATIONS.DETAIL(invitationId)
+      );
+      
+      if (!response.data.IsSuccess) {
+        const message = normalizeApiErrorMessage(response.data.ErrorMessage);
+        throw new Error(message || 'Failed to fetch invitation details');
+      }
+      return response.data.Result;
+    } catch (error: any) {
+      if (error.response?.data?.ErrorMessage) {
+        throw new Error(normalizeApiErrorMessage(error.response.data.ErrorMessage) || 'Failed to fetch invitation details');
+      }
+      throw error;
     }
-    return response.data.Result;
   },
 
   /**
    * Revoke a pending invitation
    */
   revokeInvitation: async (invitationId: number): Promise<{ message: string; invitation_id: number }> => {
-    const response = await api.post<ApiResponse<{ message: string; invitation_id: number }>>(
-      API_ENDPOINTS.INVITATIONS.REVOKE(invitationId)
-    );
-    
-    if (!response.data.IsSuccess) {
-      const message = normalizeApiErrorMessage(response.data.ErrorMessage);
-      throw new Error(message || 'Failed to revoke invitation');
+    try {
+      const response = await api.post<ApiResponse<{ message: string; invitation_id: number }>>(
+        API_ENDPOINTS.INVITATIONS.REVOKE(invitationId)
+      );
+      
+      if (!response.data.IsSuccess) {
+        const message = normalizeApiErrorMessage(response.data.ErrorMessage);
+        throw new Error(message || 'Failed to revoke invitation');
+      }
+      return response.data.Result;
+    } catch (error: any) {
+      if (error.response?.data?.ErrorMessage) {
+        throw new Error(normalizeApiErrorMessage(error.response.data.ErrorMessage) || 'Failed to revoke invitation');
+      }
+      throw error;
     }
-    return response.data.Result;
   },
 };
