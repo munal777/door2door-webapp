@@ -1,16 +1,6 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
-let API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
-
-// If the frontend is deployed (e.g. door2door.dev) but the env var is still localhost,
-// automatically use the current origin's /api endpoint to prevent CORS errors.
-if (
-  typeof window !== 'undefined' && 
-  !window.location.hostname.includes('localhost') && 
-  API_BASE_URL.includes('localhost')
-) {
-  API_BASE_URL = `${window.location.origin}/api`;
-}
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
